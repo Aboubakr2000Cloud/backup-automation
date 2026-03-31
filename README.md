@@ -55,6 +55,12 @@ week8-backup-automation/
 ✅ **Comprehensive Logging** - Dual output (file + console) with timestamps  
 ✅ **Error Resilience** - Continue processing on single source failure  
 ✅ **Detailed Summary** - Statistics on success/failure/deletions
+✅ **S3 Cloud Upload** - Upload backups to AWS S3 with verification  
+✅ **Dual Retention** - Separate policies for local and S3 storage  
+✅ **Date-Organized S3 Storage** - Backups organized by year/month/day  
+✅ **Upload Verification** - SHA256 checksum validation after upload  
+✅ **Optional Local Cleanup** - Delete local files after verified S3 upload  
+✅ **S3 Rotation** - Automatic cleanup of old cloud backups
 
 ---
 
@@ -184,6 +190,32 @@ python backup.py --dry-run
 2025-02-08 14:35:02 - INFO - Would delete: 2 old backups
 ```
 
+### S3 Upload
+
+**Enable S3 upload:**
+```bash
+python backup.py --upload
+```
+
+**Disable S3 upload:**
+```bash
+python backup.py --no-upload
+```
+
+**Upload and delete local after verification:**
+```bash
+python backup.py --upload --delete-local
+```
+
+**Configuration (.env):**
+```
+UPLOAD_TO_S3=true
+S3_BACKUP_BUCKET=your-backups-bucket
+S3_PREFIX=backups/
+S3_RETENTION_DAYS=30
+DELETE_LOCAL_AFTER_UPLOAD=false
+```
+
 **View help:**
 ```bash
 python backup.py --help
@@ -229,7 +261,22 @@ python backup.py --help
 }
 ```
 
-### 5. Backup Rotation
+### 5. Uploads to S3 (Optional)
+- If enabled, uploads verified backups to S3
+
+### 6. Verifies S3 Upload
+- Checks uploaded file matches local checksum
+
+### 7. Organizes S3 Backups
+- Stores in date-based structure (2025/02/10/)
+
+### 8. Cleans S3 Backups
+- Deletes S3 backups older than S3_RETENTION_DAYS
+
+### 9. Optional Local Cleanup
+- Deletes local copy after verified S3 upload
+  
+### 10. local backup Rotation
 - Lists all `.tar.gz` files in destination
 - Parses timestamps from filenames
 - Identifies backups older than `RETENTION_DAYS`
@@ -245,11 +292,14 @@ python backup.py --help
 # Scenario 3: All 10 are old → deletes 7 (keeps 3)
 ```
 
-### 6. Summary Report
+### 11. Summary Report
 - Total sources processed
 - Successful backups
 - Failed backups
-- Old backups deleted
+- Old local backups deleted
+- Old S3 backups deleted
+- Failed local deletions
+- Failed S3 deletions
 - Total backup size created
 
 ---
@@ -317,6 +367,10 @@ Persistent log of all operations with timestamps.
 ✅ **Production Logging** - Dual output with appropriate log levels  
 ✅ **Error Handling** - Graceful degradation on failures  
 ✅ **Type Hints** - Modern Python type annotations  
+✅ **boto3 S3 Operations** - Upload, list, delete, metadata  
+✅ **AWS Error Handling** - ClientError classification and retry logic  
+✅ **Data Integrity** - Checksum storage and verification  
+✅ **Cloud Storage Patterns** - Date-based organization, dual retention
 
 ---
 
@@ -361,6 +415,36 @@ else:
 ```
 
 Industry-standard pattern for safe testing of destructive operations.
+
+### 5. S3 Integration with Verification
+```python
+# Upload with checksum in metadata
+s3.upload_file(
+    str(archive),
+    bucket,
+    s3_key,
+    ExtraArgs={"Metadata": {"sha256": checksum}}
+)
+
+# Verify upload
+head = s3.head_object(Bucket=bucket, Key=s3_key)
+if checksum == head["Metadata"]["sha256"]:
+    # Upload verified!
+```
+Stores checksum in S3 metadata for integrity verification.
+
+### 6. Date-Organized S3 Structure
+```python
+def build_s3_key(prefix, archive, dt):
+    date_path = f"{dt.year}/{dt.month:02d}/{dt.day:02d}/"
+    return f"{prefix}{date_path}{archive.name}"
+```
+Production pattern: backups/2025/02/10/backup_143022.tar.gz
+
+### 7. Dual Rotation Logic
+- Local rotation: Based on file creation timestamp
+- S3 rotation: Based on LastModified attribute
+- Different retention policies for local vs cloud
 
 ---
 
