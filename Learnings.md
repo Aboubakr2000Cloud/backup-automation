@@ -233,7 +233,67 @@ def plan_backup_rotation(backup_dir, retention_days, min_backups):
 
 ---
 
-## 7️⃣ Dry-Run Mode - Professional Feature
+## 7️⃣ AWS S3 Integration (Week 10 Addition)
+
+### What I Learned
+
+After Week 10, I enhanced this backup script with AWS S3 cloud upload capabilities.
+
+**Key additions:**
+- Upload compressed backups to S3
+- Store SHA256 checksum in S3 object metadata
+- Verify uploads by comparing local checksum with S3 metadata
+- Organize backups in date-based structure (YYYY/MM/DD/)
+- Implement S3 rotation with separate retention policy
+- Optional local file deletion after verified upload
+
+### Code Example
+```python
+# Upload with checksum metadata
+s3.upload_file(
+    str(archive),
+    bucket,
+    s3_key,
+    ExtraArgs={"Metadata": {"sha256": checksum}}
+)
+
+# Verify upload
+head = s3.head_object(Bucket=bucket, Key=s3_key)
+s3_checksum = head["Metadata"].get("sha256")
+
+if checksum == s3_checksum:
+    logger.info("Upload verified!")
+    # Safe to delete local if configured
+```
+
+### S3 Key Organization
+```python
+# Creates structure: backups/2025/02/10/backup_143022.tar.gz
+def build_s3_key(prefix, archive, dt):
+    date_path = f"{dt.year}/{dt.month:02d}/{dt.day:02d}/"
+    return f"{prefix}{date_path}{archive.name}"
+```
+
+### What I Learned
+
+**Data Integrity:**
+- Never delete local files before verifying S3 upload
+- Store checksums in S3 metadata for future verification
+- Compare checksums, not just "upload succeeded"
+
+**Cloud Storage Patterns:**
+- Date-based organization for easy navigation
+- Separate retention policies (local vs cloud)
+- Use S3 LastModified for rotation decisions
+
+**Error Handling:**
+- Classify AWS errors (retryable vs permanent)
+- Retry transient failures with exponential backoff
+- Log all S3 operations with context
+
+---
+
+## 8️⃣ Dry-Run Mode - Professional Feature
 
 ### What I Learned
 
@@ -271,7 +331,7 @@ def main():
 
 ---
 
-## 8️⃣ Error Handling & Fault Tolerance
+## 9️⃣ Error Handling & Fault Tolerance
 
 ### What I Learned
 
@@ -306,7 +366,7 @@ logger.info(f"Successful: {success}, Failed: {failure}")
 
 ---
 
-## 9️⃣ CLI Design with argparse
+## 🔟 CLI Design with argparse
 
 ### What I Learned
 
@@ -339,7 +399,7 @@ def main():
 
 ---
 
-## 🔟 Logging & Observability
+## 1️⃣1️⃣ Logging & Observability
 
 ### What I Learned
 
@@ -420,6 +480,11 @@ logger.error(f"Compression failed: {error}")
 - [x] Dry-run mode implementation
 - [x] Production-ready logging patterns
 - [x] Fault-tolerant automation design
+- [x] boto3 S3 client operations (upload_file, head_object, delete_object)  
+- [x] S3 metadata for storing checksums  
+- [x] AWS error classification and retry patterns  
+- [x] Cloud storage organization strategies  
+- [x] Data integrity verification techniques 
 
 ### Key Takeaways
 
