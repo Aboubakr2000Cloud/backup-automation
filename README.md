@@ -55,7 +55,7 @@ week8-backup-automation/
 ✅ **CLI Overrides** - Command-line arguments override .env settings  
 ✅ **Comprehensive Logging** - Dual output (file + console) with timestamps  
 ✅ **Error Resilience** - Continue processing on single source failure  
-✅ **Detailed Summary** - Statistics on success/failure/deletions
+✅ **Detailed Summary** - Statistics on success/failure/deletions  
 ✅ **S3 Cloud Upload** - Upload backups to AWS S3 with verification  
 ✅ **Dual Retention** - Separate policies for local and S3 storage  
 ✅ **Date-Organized S3 Storage** - Backups organized by year/month/day  
