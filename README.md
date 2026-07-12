@@ -1,8 +1,8 @@
-# Week 8 — Automation & Integrations
+# Backup-Automation
 
 ## Overview
 
-This week focused on Python-shell integration and building production-ready automation systems. The project demonstrates automated backup workflows with compression, validation, intelligent rotation, upload to S3 and comprehensive error handling.
+This project focused on Python-shell integration and building production-ready automation systems. The project demonstrates automated backup workflows with compression, validation, intelligent rotation, upload to S3 and comprehensive error handling.
 
 **Key Learning Areas:**
 - Running shell commands from Python using `subprocess`
@@ -23,7 +23,7 @@ A professional command-line backup automation tool that compresses directories, 
 ### Project Structure
 
 ```
-week8-backup-automation/
+Backup-Automation/
 │
 ├── backup.py              # Main backup script
 ├── config.py              # Configuration and validation
@@ -55,7 +55,7 @@ week8-backup-automation/
 ✅ **CLI Overrides** - Command-line arguments override .env settings  
 ✅ **Comprehensive Logging** - Dual output (file + console) with timestamps  
 ✅ **Error Resilience** - Continue processing on single source failure  
-✅ **Detailed Summary** - Statistics on success/failure/deletions  
+✅ **Detailed Summary** - Statistics on success/failure/deletions
 ✅ **S3 Cloud Upload** - Upload backups to AWS S3 with verification  
 ✅ **Dual Retention** - Separate policies for local and S3 storage  
 ✅ **Date-Organized S3 Storage** - Backups organized by year/month/day  
@@ -79,7 +79,7 @@ week8-backup-automation/
 1. **Clone the repository**
 ```bash
 git clone <your-repo-url>
-cd week8-backup-automation
+cd Backup-Automation
 ```
 
 2. **Create virtual environment**
@@ -273,14 +273,14 @@ python backup.py --help
 2026-03-31 16:26:51,014 - INFO - Configuration loaded successfully
 2026-03-31 16:26:51,015 - INFO - S3 upload is ENABLED
 2026-03-31 16:26:51,015 - INFO - [DRY-RUN MODE] No files will be created or deleted
-2026-03-31 16:26:51,015 - INFO - Backup sources: [PosixPath('/home/abou/S3_folder'), PosixPath('/home/abou/cloud-learning-project/scripts/python')]
+2026-03-31 16:26:51,015 - INFO - Backup sources: [PosixPath('/home/abou/S3_folder'), PosixPath('/home/abou/scripts/python')]
 2026-03-31 16:26:51,015 - INFO - Destination: /home/abou/backups
 2026-03-31 16:26:51,015 - INFO - Retention: 6 days
 2026-03-31 16:26:51,015 - INFO - [DRY-RUN] Would compress /home/abou/S3_folder
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would create: /home/abou/backups/S3_folder_20260331_162651.tar.gz
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would create manifest: S3_folder_20260331_162651.json
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would upload S3_folder_20260331_162651.tar.gz to my-abou-backups-bucket S3 bucket: backups/2026/03/31/S3_folder_20260331_162651.tar.gz
-2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would compress /home/abou/cloud-learning-project/scripts/python
+2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would compress /home/abou/scripts/python
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would create: /home/abou/backups/python_20260331_162651.tar.gz
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would create manifest: python_20260331_162651.json
 2026-03-31 16:26:51,016 - INFO - [DRY-RUN] Would upload python_20260331_162651.tar.gz to my-abou-backups-bucket S3 bucket: backups/2026/03/31/python_20260331_162651.tar.gz
@@ -640,4 +640,4 @@ No other external dependencies required! Uses Python standard library:
 
 ---
 
-**Week 8 Complete!** This project demonstrates production-ready automation patterns used in real DevOps workflows. The skills acquired—subprocess execution, file compression, backup rotation, and CLI development—are fundamental to infrastructure automation and system administration.
+**Backup-Automation Project Complete!** This project demonstrates production-ready automation patterns used in real DevOps workflows. The skills acquired—subprocess execution, file compression, backup rotation, and CLI development—are fundamental to infrastructure automation and system administration.
